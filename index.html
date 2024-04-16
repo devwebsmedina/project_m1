@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compra de Productos</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+    #container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+    h2 {
+        margin-top: 0;
+    }
+    .product {
+        margin-bottom: 10px;
+    }
+</style>
+</head>
+<body>
+<div id="container">
+    <h2>Seleccione los productos que desea comprar:</h2>
+    <div id="product-list"></div>
+    <button id="submit">Enviar Pedido</button>
+    <div id="order-summary" style="display:none;">
+        <h2>Resumen del Pedido</h2>
+        <div id="selected-products"></div>
+        <p>Total: <span id="total"></span></p>
+        <button id="confirm">Confirmar Pedido</button>
+        <button id="cancel">Cancelar Pedido</button>
+    </div>
+</div>
+
+<script>
+    const products = [
+        { name: "Producto 1", price: 10, description: "Descripción del Producto 1" },
+        { name: "Producto 2", price: 20, description: "Descripción del Producto 2" },
+        { name: "Producto 3", price: 15, description: "Descripción del Producto 3" }
+    ];
+
+    const productList = document.getElementById('product-list');
+    const selectedProducts = document.getElementById('selected-products');
+    const totalElement = document.getElementById('total');
+    const submitButton = document.getElementById('submit');
+    const orderSummary = document.getElementById('order-summary');
+    const confirmButton = document.getElementById('confirm');
+    const cancelButton = document.getElementById('cancel');
+
+    products.forEach(product => {
+        const productDiv = document.createElement('div');
+        productDiv.classList.add('product');
+        productDiv.innerHTML = `<input type="checkbox" name="product" value="${product.name}" data-price="${product.price}"> ${product.name} - $${product.price}`;
+        productList.appendChild(productDiv);
+    });
+
+    submitButton.addEventListener('click', () => {
+        const selected = document.querySelectorAll('input[name="product"]:checked');
+        if (selected.length === 0) {
+            alert("Seleccione al menos un producto.");
+            return;
+        }
+
+        let total = 0;
+        selectedProducts.innerHTML = '';
+        selected.forEach(item => {
+            const name = item.value;
+            const price = parseInt(item.dataset.price);
+            total += price;
+            const productItem = document.createElement('p');
+            productItem.textContent = `${name} - $${price}`;
+            selectedProducts.appendChild(productItem);
+        });
+
+        totalElement.textContent = `$${total}`;
+        orderSummary.style.display = 'block';
+    });
+
+    confirmButton.addEventListener('click', () => {
+        alert("Pedido Aprobado. ¡Gracias por su compra!");
+        resetForm();
+    });
+
+    cancelButton.addEventListener('click', () => {
+        alert("Pedido Cancelado.");
+        resetForm();
+    });
+
+    function resetForm() {
+        document.querySelectorAll('input[name="product"]:checked').forEach(item => {
+            item.checked = false;
+        });
+        orderSummary.style.display = 'none';
+    }
+</script>
+</body>
+</html>
